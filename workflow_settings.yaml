@@ -1,5 +1,9 @@
 defaultProject: mde-pso-data-wranglers
-defaultLocation: US
-defaultDataset: dataform
-defaultAssertionDataset: dataform_assertions
+defaultLocation: us-central1
+defaultDataset: imdb_final
+defaultAssertionDataset: imdb_assertions
 dataformCoreVersion: 3.0.0-beta.4
+vars:
+    LOAD_GCS_BUCKET: dataform-imdb-demo/imdb
+    RAW_DATA: imdb_staging
+    TARGET_DATA: imdb_final
