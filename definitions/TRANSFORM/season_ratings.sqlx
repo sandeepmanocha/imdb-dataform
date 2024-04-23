@@ -1,3 +1,5 @@
+
+
 config {
   type: "table",
   schema: dataform.projectConfig.vars.TARGET_DATA,
@@ -12,9 +14,8 @@ config {
   assertions: {
     uniqueKey: ["tconst", "season_number"]
   },
-  tags: ["TRANSFORM_DATA"]
+  tags: ["TRANSFORM_DATA", "season_ratings","season_ratings_step_2"]
 }
-
 
 SELECT
     e.parent_tconst AS tconst

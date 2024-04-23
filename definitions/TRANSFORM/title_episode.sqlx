@@ -12,7 +12,7 @@ config {
   assertions: {
     uniqueKey: ["tconst"]
   },
-  tags: ["TRANSFORM_DATA"]
+  tags: ["TRANSFORM_DATA", "title_episode", "season_ratings","season_ratings_step_1"]
 }
 
 
