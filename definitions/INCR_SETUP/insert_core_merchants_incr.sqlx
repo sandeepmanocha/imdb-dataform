@@ -1,0 +1,51 @@
+config {
+  hasOutput: true,
+  type: "operations",
+  schema: dataform.projectConfig.vars.RAW_DATA,
+  dependencies: ["insert_core_merchants_first"],
+  tags: ["INCR", "INCR_CREATE_TABLE", "core_merchants"]
+}
+
+INSERT INTO ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
+  (merchant_id,
+    merchant_name,
+    mcc,
+    email,
+    street,
+    city,
+    state,
+    country,
+    zip,
+    latitude,
+    longitude,
+    owner_id,
+    owner_name,
+    terminal_ids,
+    Description,
+    Market_Segment,
+    Industry_Code_Description,
+    Industry_Code,
+    ingest_date)
+select 
+merchant_id,
+    merchant_name,
+    mcc,
+    email,
+    street,
+    city,
+    state,
+    country,
+    zip,
+    latitude,
+    longitude,
+    owner_id,
+    owner_name,
+    terminal_ids,
+    Description,
+    Market_Segment,
+    Industry_Code_Description,
+    Industry_Code,
+    ingest_date
+  from `mde-pso-data-wranglers.merchants_data_product.core_merchants` 
+  where merchant_id not in (select merchant_id from ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) })
+  limit 100

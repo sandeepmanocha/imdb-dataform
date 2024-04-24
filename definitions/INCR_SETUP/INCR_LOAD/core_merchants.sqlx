@@ -1,0 +1,21 @@
+config {
+  type: "incremental",
+  schema: dataform.projectConfig.vars.TARGET_DATA,
+  dependencies: ["insert_core_merchants_incr"],
+  uniqueKey: ["merchant_id"],  
+  tags: ["TRANSFORM_DATA", "core_merchants"]
+}
+
+pre_operations {
+  DECLARE timestamp_checkpoint DEFAULT (
+    ${when(incremental(),
+    `SELECT max(_PARTITIONTIME) FROM ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }`,
+    `SELECT timestamp("2000-01-01")`)}
+  )
+}
+
+SELECT
+  *
+FROM
+  ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
+WHERE _PARTITIONTIME > timestamp_checkpoint
