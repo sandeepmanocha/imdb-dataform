@@ -1,24 +1,17 @@
 config {
-  type: "incremental",
-  schema: dataform.projectConfig.vars.TARGET_DATA,
-  dependencies: ["insert_core_merchants_incr"],
-  uniqueKey: ["merchant_id"],  
-  tags: ["TRANSFORM_DATA", "core_merchants", "core_merchants_incr"],
-  bigquery: {
-    partitionBy: "last_refersh_datetime",
+  type: "table",
+  schema: dataform.projectConfig.vars.RAW_DATA,
+  name: "core_merchants",
+  tags: ["INCR", "INCR_CREATE_TABLE", "core_merchants"]
+}
+js {
+  function TableName(p) {
+    return "'"+p.split(".")[2].replace("`","")+"'";
   }
 }
 
-pre_operations {
-  DECLARE timestamp_checkpoint DEFAULT (
-    ${when(incremental(),
-    `SELECT max(last_refersh_datetime) FROM ${self()}`,
-    `SELECT timestamp("2000-01-01")`)}
-  )
-}
-
 SELECT
-  merchant_id,
+    merchant_id,
     merchant_name,
     mcc,
     email,
@@ -36,7 +29,12 @@ SELECT
     Market_Segment,
     Industry_Code_Description,
     Industry_Code,
-    ingest_date
+    ingest_date,
+    _PARTITIONTIME as LastRefreshTimestamp
 FROM
   ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
-${when(incremental(), `WHERE _PARTITIONTIME > timestamp_checkpoint`) }
+WHERE _PARTITIONTIME > (
+  SELECT MAX(LastRefreshTimestamp) FROM ${ resolve({ schema: dataform.projectConfig.vars.RAW_DATA, name:  dataform.projectConfig.vars.CONTROL_TABLE}) }
+  WHERE TableName = ${TableName(`${self()}`)}
+)
+
