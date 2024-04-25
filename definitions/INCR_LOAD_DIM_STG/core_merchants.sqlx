@@ -46,10 +46,10 @@ SELECT
     Industry_Code_Description,
     Industry_Code,
     ingest_date,
-    _PARTITIONTIME as LastRefreshTimestamp
+    _cdc_timestamp as LastRefreshTimestamp
 FROM
   ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
-WHERE _PARTITIONTIME BETWEEN last_refresh_timestamp and current_timestamp_now
+WHERE _cdc_timestamp BETWEEN last_refresh_timestamp and current_timestamp_now
 
 post_operations {
   UPDATE ${ resolve({ schema: dataform.projectConfig.vars.RAW_DATA, name:  dataform.projectConfig.vars.CONTROL_TABLE}) }
