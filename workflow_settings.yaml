@@ -7,3 +7,4 @@ vars:
     LOAD_GCS_BUCKET: dataform-imdb-demo/imdb
     RAW_DATA: imdb_staging
     TARGET_DATA: imdb_final
+    CONTROL_TABLE: BQEDWControlTable

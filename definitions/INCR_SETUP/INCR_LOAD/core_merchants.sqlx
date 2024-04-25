@@ -3,19 +3,40 @@ config {
   schema: dataform.projectConfig.vars.TARGET_DATA,
   dependencies: ["insert_core_merchants_incr"],
   uniqueKey: ["merchant_id"],  
-  tags: ["TRANSFORM_DATA", "core_merchants"]
+  tags: ["TRANSFORM_DATA", "core_merchants", "core_merchants_incr"],
+  bigquery: {
+    partitionBy: "last_refersh_datetime",
+  }
 }
 
 pre_operations {
   DECLARE timestamp_checkpoint DEFAULT (
     ${when(incremental(),
-    `SELECT max(_PARTITIONTIME) FROM ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }`,
+    `SELECT max(last_refersh_datetime) FROM ${self()}`,
     `SELECT timestamp("2000-01-01")`)}
   )
 }
 
 SELECT
-  *
+  merchant_id,
+    merchant_name,
+    mcc,
+    email,
+    street,
+    city,
+    state,
+    country,
+    zip,
+    latitude,
+    longitude,
+    owner_id,
+    owner_name,
+    terminal_ids,
+    Description,
+    Market_Segment,
+    Industry_Code_Description,
+    Industry_Code,
+    ingest_date
 FROM
   ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
-WHERE _PARTITIONTIME > timestamp_checkpoint
+${when(incremental(), `WHERE _PARTITIONTIME > timestamp_checkpoint`) }
