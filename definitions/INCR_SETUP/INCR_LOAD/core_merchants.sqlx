@@ -2,7 +2,7 @@ config {
   type: "table",
   schema: dataform.projectConfig.vars.RAW_DATA,
   name: "core_merchants",
-  tags: ["INCR", "INCR_CREATE_TABLE", "core_merchants_dim_stg"]
+  tags: ["core_merchants_incr_dim"]
 }
 js {
   function TableName(p) {

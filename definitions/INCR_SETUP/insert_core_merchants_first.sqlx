@@ -3,7 +3,7 @@ config {
   type: "operations",
   schema: dataform.projectConfig.vars.RAW_DATA,
   dependencies: ["core_merchants_stg"],
-  tags: ["INCR", "INCR_CREATE_TABLE", "core_merchants"]
+  tags: ["FIRST_100"]
 }
 
 INSERT INTO ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) }
