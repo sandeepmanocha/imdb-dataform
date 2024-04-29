@@ -2,7 +2,10 @@ config {
   type: "table",
   schema: dataform.projectConfig.vars.RAW_DATA,
   name: "core_merchants",
-  tags: ["core_merchants_incr_dim"]
+   assertions: {
+    uniqueKey: ["merchant_id"]
+  },
+  tags: ["core_merchants","core_merchants_incr_dim"]
 }
 js {
   function TableName(p) {

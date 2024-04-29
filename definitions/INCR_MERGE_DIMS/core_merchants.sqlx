@@ -3,7 +3,11 @@ config {
   schema: dataform.projectConfig.vars.TARGET_DATA,
   name: "core_merchants",
   uniqueKey: ["merchant_id"], 
-  tags: ["core_merchants_merge_dim"]
+  assertions: {
+    uniqueKey: ["merchant_id"]
+  },
+  dependencies: ["imdb_staging_core_merchants_assertions_uniqueKey_0"],
+  tags: ["core_merchants", "core_merchants_merge_dim"]
 }
 
 
