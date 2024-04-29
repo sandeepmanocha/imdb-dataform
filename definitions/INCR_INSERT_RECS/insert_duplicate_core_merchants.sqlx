@@ -3,7 +3,7 @@ config {
   type: "operations",
   schema: dataform.projectConfig.vars.RAW_DATA,
   dependencies: ["core_merchants_stg"],
-  tags: ["core_merchants", "core_merchants_next_100"]
+  tags: ["core_merchants", "core_merchants_duplicates"]
 }
 
 TRUNCATE TABLE ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) };
@@ -51,5 +51,5 @@ merchant_id,
     ingest_date,
     CURRENT_TIMESTAMP() as _cdc_timestamp
   from `mde-pso-data-wranglers.merchants_data_product.core_merchants` 
-  where merchant_id not in (select merchant_id from ${ ref({ schema: dataform.projectConfig.vars.RAW_DATA, name: "core_merchants_stg" }) })
-  limit 100
+  where merchant_id in (select merchant_id from ${ ref({ schema: dataform.projectConfig.vars.TARGET_DATA, name: "core_merchants" }) })
+  limit 10

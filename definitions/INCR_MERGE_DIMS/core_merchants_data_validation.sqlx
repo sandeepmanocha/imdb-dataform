@@ -1,0 +1,17 @@
+config {
+  type: "assertion",
+  schema: dataform.projectConfig.vars.TARGET_DATA,
+  dependencies: ["imdb_staging_core_merchants_assertions_uniqueKey_0"],
+  tags: ["core_merchants", "core_merchants_merge_dim"]
+}
+
+SELECT
+  *
+FROM (
+  SELECT
+    email,
+    COUNT(1) AS index_row_count
+  FROM ${ ref({ schema: dataform.projectConfig.vars.TARGET_DATA, name: "core_merchants" }) }
+  GROUP BY email
+  ) AS data
+WHERE index_row_count > 1
